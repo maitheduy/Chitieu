@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quản lý chi tiêu cá nhân</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+      background: #f8f9fa;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .expense {
+      background: white;
+      padding: 10px;
+      margin-top: 10px;
+      border-left: 5px solid #3498db;
+    }
+    .total {
+      font-weight: bold;
+      text-align: right;
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quản lý chi tiêu</h1>
+
+  <input type="number" id="amount" placeholder="Nhập số tiền (VND)">
+  <input type="text" id="note" placeholder="Nhập ghi chú (ví dụ: ăn trưa)">
+  <button onclick="addExpense()">Thêm khoản chi</button>
+
+  <div id="expenses"></div>
+  <div class="total" id="total">Tổng cộng: 0 VND</div>
+
+  <script>
+    let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+    function renderExpenses() {
+      const expensesDiv = document.getElementById("expenses");
+      expensesDiv.innerHTML = "";
+      let total = 0;
+      expenses.forEach((e, i) => {
+        total += e.amount;
+        const div = document.createElement("div");
+        div.className = "expense";
+        div.innerText = `${e.amount.toLocaleString()} VND - ${e.note}`;
+        expensesDiv.appendChild(div);
+      });
+      document.getElementById("total").innerText = "Tổng cộng: " + total.toLocaleString() + " VND";
+    }
+
+    function addExpense() {
+      const amount = parseFloat(document.getElementById("amount").value);
+      const note = document.getElementById("note").value;
+      if (isNaN(amount) || !note.trim()) {
+        alert("Vui lòng nhập đủ thông tin");
+        return;
+      }
+      expenses.push({ amount, note });
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+      document.getElementById("amount").value = "";
+      document.getElementById("note").value = "";
+      renderExpenses();
+    }
+
+    renderExpenses();
+  </script>
+</body>
+</html>
